@@ -48,7 +48,7 @@ int main() {
                     std::cout << err.what() << std::endl;
                     break;
                 }
-                st.insert_by_number(N, *rec);
+                st.insert_by_number(N + 1, *rec);
                 break;
             }
             case '3': {
@@ -58,7 +58,7 @@ int main() {
             case '4': {
                 std::cout << "enter position to delete" << std::endl;
                 std::cin >> N;
-                st.delete_by_number(N);
+                st.delete_by_number(N + 1);
                 break;
             }
             case '5': {
