@@ -43,7 +43,6 @@ namespace containers {
         void delete_by_number(size_t N);
         void insert_by_it(forward_iterator ins_it, T& value);
         void insert_by_number(size_t N, T& value);
-        stack& operator=(stack& other);
         size_t Size();
     private:
         using allocator_type = typename Allocator::template rebind<element>::other;
@@ -113,12 +112,6 @@ namespace containers {
     }
 
     template<class T, class Allocator>
-    stack<T, Allocator>& stack<T, Allocator>::operator=(stack<T, Allocator>& other){
-        size = other.size;
-        first = std::move(other.first);
-    }
-
-    template<class T, class Allocator>
     size_t stack<T, Allocator>::Size() {
         return size;
     }
@@ -151,23 +144,23 @@ namespace containers {
 
     template<class T, class Allocator>
     void stack<T, Allocator>::insert_by_it(containers::stack<T, Allocator>::forward_iterator ins_it, T& value) {
-        auto tmp = std::unique_ptr<element, deleter>(new element{value}, deleter{&this->allocator_});
+        element* tmp = this->allocator_.allocate(1);
+        std::allocator_traits<allocator_type>::construct(this->allocator_, tmp, value);
         forward_iterator i = this->begin();
         if (ins_it == this->begin()) {
             tmp->next_element = std::move(first);
-            first = std::move(tmp);
+            first = std::move(std::unique_ptr<element, deleter> (tmp, deleter{&this->allocator_}));
             size++;
             return;
         }
         while((i.it_ptr != nullptr) && (i.it_ptr->next() != ins_it)) {
-            ++i;
+            i++;
         }
         if (i.it_ptr == nullptr) throw std::logic_error ("out of borders");
         tmp->next_element = std::move(i.it_ptr->next_element);
-        i.it_ptr->next_element = std::move(tmp);
+        i.it_ptr->next_element = std::move(std::unique_ptr<element, deleter> (tmp, deleter{&this->allocator_}));
         size++;
     }
-
     template<class T, class Allocator>
     void stack<T, Allocator>::insert_by_number(size_t N, T& value) {
         forward_iterator it = this->begin();
