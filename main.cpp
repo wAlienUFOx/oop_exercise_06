@@ -10,7 +10,7 @@ int main() {
     float S;
     char option = '0';
     containers::stack<Rectangle<int>, allocators::my_allocator<Rectangle<int>, 800>> st;
-    Rectangle<int> *rec = nullptr;
+    Rectangle<int> rec{};
     while (option != 'q') {
         std::cout << "choose option (m - man)" << std::endl;
         std::cin >> option;
@@ -29,26 +29,16 @@ int main() {
                           << "q) - quit" << std::endl;
                 break;
             case '1': {
-                try{
-                    rec =  new Rectangle<int>(std::cin);
-                }catch(std::logic_error& err){
-                    std::cout << err.what() << std::endl;
-                    break;
-                }
-                st.push(*rec);
+                rec =  Rectangle<int>(std::cin);
+                st.push(rec);
                 break;
             }
             case '2': {
                 std::cout << "enter position to insert" << std::endl;
                 std::cin >> N;
                 std::cout << "enter rectangle" << std::endl;
-                try{
-                    rec =  new Rectangle<int>(std::cin);
-                }catch(std::logic_error& err){
-                    std::cout << err.what() << std::endl;
-                    break;
-                }
-                st.insert_by_number(N + 1, *rec);
+                rec =  Rectangle<int>(std::cin);
+                st.insert_by_number(N + 1, rec);
                 break;
             }
             case '3': {
