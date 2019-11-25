@@ -99,7 +99,8 @@ namespace containers {
         if (size == 0) {
             throw std::logic_error ("stack is empty");
         }
-        first = std::move(first->next_element);
+        auto tmp = std::unique_ptr<element, deleter>(std::move(first->next_element));
+        first = std::move(tmp);
         size--;
     }
 
